@@ -17,11 +17,16 @@ const Login = ({navigation}) => {
         })
     }
   return (
-    <View>
-       <View>
-      <TextInput placeholder='Email' value={email} onChangeText={setEmail}/>
-      <TextInput placeholder='Password' value={password} onChangeText={setPassword}/>
-      <Pressable onPress={loginfunc}><Text>Login</Text></Pressable>
+    <View style={{width: '100%',justifyContent: 'center',alignItems:'center',height: '80%'}}>
+       <View >
+      <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail}/>
+      <TextInput style={styles.input}  placeholder='Password' value={password} onChangeText={setPassword}/>
+      <Pressable style={styles.btn} onPress={loginfunc}><Text style={{fontSize: 17,color: 'white'}}>Login</Text></Pressable>
+      <View style={{flexDirection: 'row',marginTop: 10}}>
+      <Text>Don't have an account? </Text>
+      <Pressable onPress={()=> navigation.navigate('Signup')}><Text style={{color: 'blue'}}>Signup</Text></Pressable>
+      </View>
+     
     </View>
     </View>
   )
@@ -29,4 +34,23 @@ const Login = ({navigation}) => {
 
 export default Login
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  input: {
+    marginTop: 10,
+     width: 350,
+      height: 50,
+      borderColor:  'black',
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingLeft: 10
+
+   },
+   btn : {
+    height: 50,
+    backgroundColor: 'darkblue',
+    marginTop: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+   }
+})
