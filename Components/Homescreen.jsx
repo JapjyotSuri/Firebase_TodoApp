@@ -2,7 +2,9 @@ import { StyleSheet, Text, View,TextInput, Pressable, Alert, FlatList } from 're
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth'
+import CheckBox from '@react-native-community/checkbox';
 const Homescreen = () => {
+  
 const [task,setTask]=useState('');
 const [todos,setTodos]=useState([]);
 
@@ -16,7 +18,7 @@ const [todos,setTodos]=useState([]);
     Alert.alert('Task added');
   }).catch((error) => console.log(error))
   }
-  const [myData,setMyData]=useState('null');
+  
   useEffect(()=> {
     const user = auth().currentUser;
 
@@ -40,10 +42,19 @@ const [todos,setTodos]=useState([]);
       return () => unsubscribe();
     }
   },[])
-  async function getData(){
-    const data=await firestore().collection("Todo").get();
-    // setMyData(data);
-    console.log(data);
+
+  async function handleToggle(id,status){
+    const user=auth().currentUser;
+    await firestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('tasks')
+    .doc(id)
+    .update({completed: !status})
+
+    setTodos((prevTasks)=> prevTasks.map( (task)=> 
+      task.id === id ? {...task,completed: !status} : task
+    ));
   }
   function handleDelete(id){
     const user = auth().currentUser;
@@ -55,7 +66,7 @@ const [todos,setTodos]=useState([]);
   return (
     <View style={{flex: 1}}>
          <View style={{alignItems: 'center'}}>
-          <TextInput style={styles.input} placeholder='task.......'  value={task}  onChangeText={setTask}/>
+          <TextInput style={styles.input} placeholder='Task description here.......'  value={task}  onChangeText={setTask}/>
           <Pressable style={styles.btn} onPress={()=> handleTaskAdd()}>
             <Text style={{color: 'white', fontSize: 17, fontWeight: 'bold'}}>Add task</Text>
             </Pressable>
@@ -66,8 +77,12 @@ const [todos,setTodos]=useState([]);
            renderItem={({item}) => (
             <View style={styles.card}>
             <View style={{width: '100%' ,alignItems: 'center',flexDirection: 'row',gap: 4,justifyContent: 'space-between'}}>
-             
-              <Text style={{fontSize: 20}}> {item.task}</Text>
+             <CheckBox value={item.completed}
+             onValueChange={() =>handleToggle(item.id,item.completed) }
+             style={{ transform: [{ scale: 0.9 }] }}
+             />
+             <View style={{width: 100}}><Text style={{fontSize: 20}}> {item.task}</Text></View>
+              
               <Pressable onPress={()=> handleDelete(item.id)}><Text>Delete</Text></Pressable>
             </View>
             </View>
@@ -85,20 +100,17 @@ export default Homescreen
 const styles = StyleSheet.create({
      input: {
       marginTop: 10,
-     width: 350,
+      width: 350,
       height: 50,
       borderColor:  'black',
       borderWidth: 1,
       borderRadius: 5,
       paddingLeft: 10
-
-
-
      },
      card: {
       backgroundColor: '#DAE0E2',
       width: 350,
-      height: 50,
+      height: 'auto',
       margin: 16,
       paddingLeft: 16,
       paddingRight: 16,

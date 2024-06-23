@@ -23,8 +23,8 @@ const Signup = ({navigation}) => {
   return (
     <View  style={{width: '100%',justifyContent: 'center',alignItems:'center',height: '80%'}}>
       <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail}/>
-      <TextInput style={styles.input} placeholder='Password' value={password} onChangeText={setPassword}/>
-      <TextInput style={styles.input} placeholder='Confirm Password' value={password} onChangeText={setPassword}/>
+      <TextInput style={styles.input} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={true} />
+      <TextInput style={styles.input} placeholder='Confirm Password' value={password} onChangeText={setPassword} secureTextEntry={true} />
       <Pressable style={styles.btn} onPress={signUpFunc}><Text style={{fontSize: 17,color: 'white'}}>Sign up</Text></Pressable>
       <View style={{flexDirection: 'row',marginTop: 10,justifyContent: 'flex-start'}}>
       <Text>Already have an account? </Text>

@@ -19,8 +19,8 @@ const Login = ({navigation}) => {
   return (
     <View style={{width: '100%',justifyContent: 'center',alignItems:'center',height: '80%'}}>
        <View >
-      <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail}/>
-      <TextInput style={styles.input}  placeholder='Password' value={password} onChangeText={setPassword}/>
+      <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail} />
+      <TextInput style={styles.input}  placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={true} />
       <Pressable style={styles.btn} onPress={loginfunc}><Text style={{fontSize: 17,color: 'white'}}>Login</Text></Pressable>
       <View style={{flexDirection: 'row',marginTop: 10}}>
       <Text>Don't have an account? </Text>
