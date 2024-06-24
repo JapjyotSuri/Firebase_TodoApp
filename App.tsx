@@ -10,34 +10,13 @@ import { Alert, Pressable, SafeAreaView, Text, TextInput, View } from 'react-nat
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 const App = () => {
   const Stack=createNativeStackNavigator();
-//   const [email,setEmail]=useState('');
-//   const [password,setPassword]=useState('')
-//   function signUpFunc(){
-//       auth().createUserWithEmailAndPassword(email,password).then(()=> {
-//         Alert.alert("user created" + email,password)
-//         setEmail("");
-//         setPassword("");
-       
-//   }).catch((error) =>{
-//     console.log(error)
-//     Alert.alert(error.nativeErrorMessage)
-//   }
-// ) }
   return (
-    // <SafeAreaView>
-    // <View>
-    //  <View>
-    //   <TextInput placeholder='Email' value={email} onChangeText={setEmail}/>
-    //   <TextInput placeholder='Password' value={password} onChangeText={setPassword}/>
-    //   <Pressable onPress={signUpFunc}><Text>Sign up</Text></Pressable>
-    // </View>
-    //   </View>
-    //   </SafeAreaView>
+    
     <NavigationContainer>
     <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen name='Signup' component={Signup}></Stack.Screen>
       <Stack.Screen name='Login' component={Login}></Stack.Screen>
-      <Stack.Screen name='Home' component={Homescreen}></Stack.Screen>
+      <Stack.Screen name='Todos' component={Homescreen}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
   )
