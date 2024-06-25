@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth'
 import CheckBox from '@react-native-community/checkbox';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 const Homescreen = ({ navigation }) => {
-
+  
   const [task, setTask] = useState('');
   const [todos, setTodos] = useState([]);
   const [pending, setPending] = useState(0);
@@ -21,6 +21,7 @@ const Homescreen = ({ navigation }) => {
       // Alert.alert('Task added');
     }).catch((error) => console.log(error))
   }
+
   useEffect(() => {
     //This is to render all the tasks that are present in firestore for a particular user everytime any change is made to the firestore data 
     const user = auth().currentUser;

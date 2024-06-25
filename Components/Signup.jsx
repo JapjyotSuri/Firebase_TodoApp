@@ -11,7 +11,7 @@ const Signup = ({ navigation }) => {
   function signUpFunc() {
     if(confirm===password){
     auth().createUserWithEmailAndPassword(email, password).then(() => {
-      Alert.alert("user created " + email)
+      Alert.alert("User created " + email)
       setEmail("");
       setPassword("");
       navigation.navigate('Login')

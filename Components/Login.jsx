@@ -6,8 +6,8 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   function loginfunc() {
     auth().signInWithEmailAndPassword(email, password).then((res) => {
-      console.log(res)
-      Alert.alert("logged in succesfully")
+      // console.log(res)
+      Alert.alert("Logged in succesfully")
       setEmail('');
       setPassword('');
       navigation.navigate('Todos');
