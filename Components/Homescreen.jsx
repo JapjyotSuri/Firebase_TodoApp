@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth'
 import CheckBox from '@react-native-community/checkbox';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 const Homescreen = ({ navigation }) => {
-  
+
   const [task, setTask] = useState('');
   const [todos, setTodos] = useState([]);
   const [pending, setPending] = useState(0);
@@ -21,7 +21,19 @@ const Homescreen = ({ navigation }) => {
       // Alert.alert('Task added');
     }).catch((error) => console.log(error))
   }
-
+  function handleUpdate(id, value) {
+    const user = auth().currentUser;
+    firestore().collection('users').doc(user.uid).collection('tasks').doc(id).update({ task: value }).then(() => {
+      const updatedTodos = todos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, isEditing: false, task: value };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
+      // Alert.alert('Task added');
+    }).catch((error) => console.log(error))
+  }
   useEffect(() => {
     //This is to render all the tasks that are present in firestore for a particular user everytime any change is made to the firestore data 
     const user = auth().currentUser;
@@ -36,7 +48,9 @@ const Homescreen = ({ navigation }) => {
           querySnapshot.forEach(documentSnapshot => {//this is used to loop through each document in the collection
             tasksArray.push({
               ...documentSnapshot.data(),
+              isEditing: false,
               id: documentSnapshot.id,
+              editTask: documentSnapshot.data().task
             });
           });
           setTodos(tasksArray);
@@ -93,19 +107,44 @@ const Homescreen = ({ navigation }) => {
       </View>
       <FlatList data={todos}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={{ width: '100%', alignItems: 'center', flexDirection: 'row', gap: 4, justifyContent: 'space-between' }}>
-              <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
-                <CheckBox value={item.completed}
-                  onValueChange={() => handleToggle(item.id, item.completed)}
-                  style={{ transform: [{ scale: 0.9 }] }}
-                />
-                <View style={{ width: 250 }}><Text style={[{ fontSize: 18, color: '#5D3FD3', fontWeight: 'bold' }, item.completed && styles.taskCompleted]}> {item.task}</Text></View>
-              </View>
+          <View style={styles.card}>{
+            item.isEditing ? (<View style={{ alignItems: 'center', flexDirection: 'row', width: '100%', justifyContent: 'space-between',paddingHorizontal: 0 }}>
+              <TextInput style={[styles.input, { width: '72%', height: 40, marginTop: 0 }]} value={item.editTask} onChangeText={(text) => {
+                const updateTodos = todos.map(todo => {
+                  if (todo.id === item.id) {
+                    return { ...todo, editTask: text };
+                  }
+                  return todo;
+                })
+                setTodos(updateTodos);
+              }} />
+              <Pressable style={[styles.btn, { width: '25%', marginTop: 0 }]} onPress={() => handleUpdate(item.id, item.editTask)}><Text style={{ color: 'white' }}>Edit</Text></Pressable></View>) :
+              (<View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ alignItems: 'center', flexDirection: 'row', }}>
+                  <CheckBox value={item.completed}
+                    onValueChange={() => handleToggle(item.id, item.completed)}
+                    style={{ transform: [{ scale: 0.9 }] }}
+                  />
+                  <View style={{ width: 250 }}><Text style={[{ fontSize: 18, color: '#5D3FD3', fontWeight: 'bold' }, item.completed && styles.taskCompleted]}> {item.task}</Text></View>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <AntDesign name='edit' style={{ color: 'red', fontSize: 27 }}
+                    onPress={() => {
+                      const updatedTodos = todos.map(todo => {
+                        if (todo.id === item.id) {
+                          return { ...todo, isEditing: true };
+                        }
+                        return todo;
+                      });
+                      setTodos(updatedTodos);
+                    }
+                    } />
 
-              <AntDesign name='delete' style={{ color: 'red', fontSize: 27 }} onPress={() => handleDelete(item.id)} />
+                  <AntDesign name='delete' style={{ color: 'red', fontSize: 27 }} onPress={() => handleDelete(item.id)} />
+                </View>
+              </View>)
+          }
 
-            </View>
           </View>
         )}
 
@@ -133,19 +172,20 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#f3f3ff',
-    width: 350,
+    width: '92%',
     height: 'auto',
-    margin: 16,
+    margin: 13,
+    
     padding: 10,
 
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
     borderRadius: 10,
-    shadowColor: 'rgba(0, 0, 0, 0.24)',
+    shadowColor: 'rgba(0, 0, 0, 0.20)',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 1,
-    shadowRadius: 8,
+    shadowRadius: 7,
     elevation: 5,
   },
   btn: {
@@ -165,7 +205,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f3f3ff',
-    width: 117,
+    paddingHorizontal: 15,
     height: 40,
     padding: 1,
     borderRadius: 10,
