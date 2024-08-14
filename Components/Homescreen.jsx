@@ -43,7 +43,8 @@ const Homescreen = ({ navigation }) => {
         .collection('users')
         .doc(user.uid)
         .collection('tasks')
-        .onSnapshot(querySnapshot => {//we have used inSnapshot here so that we can get realtime updates when anything changes in the firestore
+        .onSnapshot(querySnapshot => {//we have used onSnapshot here so that we can get realtime updates when anything changes in the firestore
+          if(querySnapshot && querySnapshot.exists){
           const tasksArray = [];
           querySnapshot.forEach(documentSnapshot => {//this is used to loop through each document in the collection
             tasksArray.push({
@@ -64,6 +65,7 @@ const Homescreen = ({ navigation }) => {
           setPending(pendingTasks);
           let completedTasks = tasksArray.length - pendingTasks;
           setCompleted(completedTasks)
+        }
         });
 
       return () => unsubscribe();
